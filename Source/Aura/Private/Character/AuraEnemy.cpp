@@ -14,8 +14,18 @@ AAuraEnemy::AAuraEnemy()
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
+}
+
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	checkf(AbilitySystemComponent, TEXT("AbilitySystem Component is NULL on AuraEnemy"))
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 void AAuraEnemy::HighlightActor()
@@ -38,7 +48,6 @@ void AAuraEnemy::UnHighlightActor()
 	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
 	
 	CharMesh->SetRenderCustomDepth(false);
-
 	// in case there are enemies that swap weapons
 	if (Weapon) Weapon->SetRenderCustomDepth(false);
 }
