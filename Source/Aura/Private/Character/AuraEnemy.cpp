@@ -3,14 +3,35 @@
 
 #include "Character/AuraEnemy.h"
 
+#include "Aura/Aura.h"
+
+
+AAuraEnemy::AAuraEnemy()
+{
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+}
 
 void AAuraEnemy::HighlightActor()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Highlight Actor"));
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 20, 30, FColor::Purple, true);
+	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
+	
+	CharMesh->SetRenderCustomDepth(true);
+	CharMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+
+	// in case there are enemies that swap weapons
+	if (Weapon)
+	{
+		Weapon->SetRenderCustomDepth(true);
+		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	}
 }
 
 void AAuraEnemy::UnHighlightActor()
 {
-	FlushPersistentDebugLines(GetWorld());
+	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
+	
+	CharMesh->SetRenderCustomDepth(false);
+
+	// in case there are enemies that swap weapons
+	if (Weapon) Weapon->SetRenderCustomDepth(false);
 }
