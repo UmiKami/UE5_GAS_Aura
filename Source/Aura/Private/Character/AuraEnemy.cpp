@@ -41,8 +41,7 @@ void AAuraEnemy::HighlightActor()
 		Weapon->SetRenderCustomDepth(true);
 		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	}
-}
-
+} 
 void AAuraEnemy::UnHighlightActor()
 {
 	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
