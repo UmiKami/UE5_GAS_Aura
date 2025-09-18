@@ -22,7 +22,7 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent> Camera;
-	
+
 	UPROPERTY(EditAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArm;
 
@@ -32,4 +32,5 @@ public:
 
 private:
 	void SetupAbilitySystemAndAttributeSet();
+	void SetupOverlayWidget();
 };

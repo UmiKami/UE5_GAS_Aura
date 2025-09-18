@@ -7,14 +7,16 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 
 	SpringArm->SetupAttachment(GetRootComponent());
-	
+
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 
 	Camera->SetupAttachment(SpringArm);
@@ -37,6 +39,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// init ability actor info for the Server
 
 	SetupAbilitySystemAndAttributeSet();
+	SetupOverlayWidget();
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -46,6 +49,7 @@ void AAuraCharacter::OnRep_PlayerState()
 	// init ability actor info for the Client
 
 	SetupAbilitySystemAndAttributeSet();
+	SetupOverlayWidget();
 }
 
 void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
@@ -57,4 +61,28 @@ void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
 	CurrentPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(CurrentPlayerState, this);
 	AbilitySystemComponent = CurrentPlayerState->GetAbilitySystemComponent();
 	AttributeSet = CurrentPlayerState->GetAttributeSet();
+}
+
+void AAuraCharacter::SetupOverlayWidget()
+{
+	const TObjectPtr<AAuraPlayerState> CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
+
+	checkf(CurrentPlayerState, TEXT("CurrentPlayerState is NULL on AAuraCharacter"));
+
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		/*
+		 * The reason why we are checking nullptr with if statement is because AuraHUD is only valid for local player.
+		 * This function will also be run on the server side, in which the HUD of other players will be NULL for the local player.
+		 */
+		if (const TObjectPtr<AAuraHUD> AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+		{
+			AuraHUD->InitOverlay(
+				AuraPlayerController,
+				CurrentPlayerState,
+				CurrentPlayerState->GetAbilitySystemComponent(),
+				CurrentPlayerState->GetAttributeSet()
+			);
+		}
+	}
 }
