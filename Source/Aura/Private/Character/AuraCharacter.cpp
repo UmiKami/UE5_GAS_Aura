@@ -63,7 +63,7 @@ void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
 	AttributeSet = CurrentPlayerState->GetAttributeSet();
 }
 
-void AAuraCharacter::SetupOverlayWidget()
+void AAuraCharacter::SetupOverlayWidget() const
 {
 	const TObjectPtr<AAuraPlayerState> CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
 

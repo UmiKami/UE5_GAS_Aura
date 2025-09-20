@@ -32,5 +32,5 @@ public:
 
 private:
 	void SetupAbilitySystemAndAttributeSet();
-	void SetupOverlayWidget();
+	void SetupOverlayWidget() const;
 };
