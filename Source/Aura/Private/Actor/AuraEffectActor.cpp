@@ -14,10 +14,23 @@ AAuraEffectActor::AAuraEffectActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
 }
 
+void AAuraEffectActor::DisplayAllActiveEffectAndStackCount(UAbilitySystemComponent* TargetASC)
+{
+	TArray<FGameplayEffectSpec> AllActiveSpecs = {};
+
+	TargetASC->GetAllActiveGameplayEffectSpecs(AllActiveSpecs);
+
+	for (auto Spec : AllActiveSpecs)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Effect: %s | Count: %d "), *Spec.Def.GetName(), Spec.GetStackCount());
+	}
+}
+
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
@@ -36,7 +49,8 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 		const bool bIsInfinite = EffectSpec.Data->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
 
-		if (bIsInfinite && InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+		if (bIsInfinite && InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap && ActiveEffectHandle
+			.WasSuccessfullyApplied())
 		{
 			const uint32 TargetUID = TargetActor->GetUniqueID();
 
@@ -45,21 +59,31 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	}
 }
 
+// TODO: GameplayEffectClass member variables should be an array of their respective classes;e.g. we can provide 2 infinite effects and then apply them at the same time.
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> InstantGEClass : InstantGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, InstantGEClass);
+		}
 	}
 
 	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> DurationGEClass : DurationGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, DurationGEClass);
+		}
 	}
 
 	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> InfiniteGEClass : InfiniteGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, InfiniteGEClass);
+		}
 	}
 }
 
@@ -67,17 +91,26 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> InstantGEClass : InstantGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, InstantGEClass);
+		}
 	}
 
 	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> DurationGEClass : DurationGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, DurationGEClass);
+		}
 	}
 
 	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
-		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+		for (const TSubclassOf<UGameplayEffect> InfiniteGEClass : InfiniteGameplayEffectClassList)
+		{
+			ApplyEffectToTarget(TargetActor, InfiniteGEClass);
+		}
 	}
 
 	if (InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
@@ -97,13 +130,25 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 		}
 
 		const TArray<FActiveGameplayEffectHandle> ActiveEffectList = ActiveInfiniteEffectHandles[UID];
+		
+
 
 		for (const auto& ActiveEffect : ActiveEffectList)
 		{
-			if (TargetASC->RemoveActiveGameplayEffect(ActiveEffect, 1))
+			if (const FActiveGameplayEffect* ActiveGEffect = TargetASC->GetActiveGameplayEffect(ActiveEffect))
 			{
-				ActiveInfiniteEffectHandles.FindAndRemoveChecked(UID);
+				if (const UGameplayEffect* GameplayEffect = ActiveGEffect->Spec.Def)
+				{
+					FString EffectNameString = GameplayEffect->GetName();
+					FString DebugMessage = "";
+
+					UE_LOG(LogTemp, Warning, TEXT("%s: %s"), *DebugMessage, *EffectNameString);
+				}
+				// TODO: For some fucking reason this line is executing twice when going from overlapping 3 -> 1 effect actor. Mana decrement STOPS. Fix it whenever I know better about Unreal Engine
+				TargetASC->RemoveActiveGameplayEffect(ActiveEffect, 1);
 			}
 		}
+
+		ActiveInfiniteEffectHandles.FindAndRemoveChecked(UID);
 	}
 }
