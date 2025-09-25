@@ -59,7 +59,6 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	}
 }
 
-// TODO: GameplayEffectClass member variables should be an array of their respective classes;e.g. we can provide 2 infinite effects and then apply them at the same time.
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
@@ -82,6 +81,7 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 	{
 		for (const TSubclassOf<UGameplayEffect> InfiniteGEClass : InfiniteGameplayEffectClassList)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Added infinite effect"));
 			ApplyEffectToTarget(TargetActor, InfiniteGEClass);
 		}
 	}
@@ -132,7 +132,6 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 		const TArray<FActiveGameplayEffectHandle> ActiveEffectList = ActiveInfiniteEffectHandles[UID];
 		
 
-
 		for (const auto& ActiveEffect : ActiveEffectList)
 		{
 			if (const FActiveGameplayEffect* ActiveGEffect = TargetASC->GetActiveGameplayEffect(ActiveEffect))
@@ -140,11 +139,11 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 				if (const UGameplayEffect* GameplayEffect = ActiveGEffect->Spec.Def)
 				{
 					FString EffectNameString = GameplayEffect->GetName();
-					FString DebugMessage = "";
+					FString DebugMessage = "Removed => ";
 
 					UE_LOG(LogTemp, Warning, TEXT("%s: %s"), *DebugMessage, *EffectNameString);
 				}
-				// TODO: For some fucking reason this line is executing twice when going from overlapping 3 -> 1 effect actor. Mana decrement STOPS. Fix it whenever I know better about Unreal Engine
+				
 				TargetASC->RemoveActiveGameplayEffect(ActiveEffect, 1);
 			}
 		}
