@@ -131,19 +131,11 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 
 		const TArray<FActiveGameplayEffectHandle> ActiveEffectList = ActiveInfiniteEffectHandles[UID];
 		
-
 		for (const auto& ActiveEffect : ActiveEffectList)
 		{
+			// I know it's not required, but it was causing an annoying error when trying to apply an Invalid Effect Handle
 			if (const FActiveGameplayEffect* ActiveGEffect = TargetASC->GetActiveGameplayEffect(ActiveEffect))
 			{
-				if (const UGameplayEffect* GameplayEffect = ActiveGEffect->Spec.Def)
-				{
-					FString EffectNameString = GameplayEffect->GetName();
-					FString DebugMessage = "Removed => ";
-
-					UE_LOG(LogTemp, Warning, TEXT("%s: %s"), *DebugMessage, *EffectNameString);
-				}
-				
 				TargetASC->RemoveActiveGameplayEffect(ActiveEffect, 1);
 			}
 		}
