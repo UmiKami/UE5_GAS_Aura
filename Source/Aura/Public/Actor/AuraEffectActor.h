@@ -38,6 +38,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
+	void DisplayAllActiveEffectAndStackCount(UAbilitySystemComponent* TargetASC);
+
+	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
 	UFUNCTION(BlueprintCallable)
@@ -53,19 +56,19 @@ protected:
 	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
-	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
+	TArray<TSubclassOf<UGameplayEffect>> InstantGameplayEffectClassList;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
 	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
-	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
+	TArray<TSubclassOf<UGameplayEffect>> DurationGameplayEffectClassList;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
 	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
-	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;
+	TArray<TSubclassOf<UGameplayEffect>> InfiniteGameplayEffectClassList;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Gameplay Effects")
 	EEffectRemovalPolicy InfiniteEffectRemovalPolicy = EEffectRemovalPolicy::RemoveOnEndOverlap;
