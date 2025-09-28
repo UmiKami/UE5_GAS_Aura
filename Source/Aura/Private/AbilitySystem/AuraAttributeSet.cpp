@@ -3,6 +3,9 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayEffectExtension.h"
+#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -38,6 +41,51 @@ void UAuraAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribu
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
 	}
 }
+
+void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
+{
+	Props.EffectContextHandle = Data.EffectSpec.GetContext();
+
+	Props.Source.AbilitySystemComponent = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+
+	if (IsValid(Props.Source.AbilitySystemComponent) && Props.Source.AbilitySystemComponent->AbilityActorInfo.IsValid() && Props.Source.AbilitySystemComponent->AbilityActorInfo->AvatarActor.
+		IsValid())
+	{
+		Props.Source.AvatarActor = Props.Source.AbilitySystemComponent->AbilityActorInfo->AvatarActor.Get();
+		Props.Source.Controller = Props.Source.AbilitySystemComponent->AbilityActorInfo->PlayerController.Get();
+
+		if (!Props.Source.Controller && Props.Source.AvatarActor)
+		{
+			if (const APawn* Pawn = Cast<APawn>(Props.Source.AvatarActor))
+			{
+				Props.Source.Controller = Pawn->GetController();
+			}
+		}
+
+		if (Props.Source.Controller)
+		{
+			Props.Source.Character = Cast<ACharacter>(Props.Source.Controller->GetPawn());
+		}
+	}
+
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		Props.Target.AvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		Props.Target.Controller = Data.Target.AbilityActorInfo->PlayerController.Get();
+		Props.Target.Character = Cast<ACharacter>(Props.Target.AvatarActor);
+		Props.Target.AbilitySystemComponent = &Data.Target;
+	}
+}
+
+void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	FEffectProperties Props;
+	
+	SetEffectProperties(Data, Props);
+}
+
 void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData OldMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Mana, OldMana);

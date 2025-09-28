@@ -14,6 +14,47 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT()
+struct FEffectPropertiesBase
+{
+	GENERATED_BODY()
+
+	FEffectPropertiesBase()
+	{
+	}
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AActor> AvatarActor = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<AController> Controller = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<ACharacter> Character = nullptr;
+};
+
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+
+	FEffectProperties()
+	{
+	}
+
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	UPROPERTY()
+	FEffectPropertiesBase Source;
+
+	UPROPERTY()
+	FEffectPropertiesBase Target;
+};
+
+
 /**
  * 
  */
@@ -56,4 +97,7 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData OldMaxHealth) const;
+
+private:
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
 };
