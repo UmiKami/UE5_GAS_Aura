@@ -25,13 +25,13 @@ void AAuraEnemy::BeginPlay()
 
 	checkf(AbilitySystemComponent, TEXT("AbilitySystem Component is NULL on AuraEnemy"))
 
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	SetupAbilitySystemAndAttributeSet();
 }
 
 void AAuraEnemy::HighlightActor()
 {
 	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
-	
+
 	CharMesh->SetRenderCustomDepth(true);
 	CharMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 
@@ -41,12 +41,24 @@ void AAuraEnemy::HighlightActor()
 		Weapon->SetRenderCustomDepth(true);
 		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	}
-} 
+}
+
 void AAuraEnemy::UnHighlightActor()
 {
 	const TObjectPtr<USkeletalMeshComponent> CharMesh = GetMesh();
-	
+
 	CharMesh->SetRenderCustomDepth(false);
 	// in case there are enemies that swap weapons
-	if (Weapon) Weapon->SetRenderCustomDepth(false);
+	if (Weapon)
+	{
+		Weapon->SetRenderCustomDepth(false);
+	}
+}
+
+void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
+{
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->AbilityActorInfoSet();
 }

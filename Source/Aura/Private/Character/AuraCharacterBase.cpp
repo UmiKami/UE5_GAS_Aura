@@ -1,6 +1,6 @@
 // Copyright By UmiKami
 
- #include "Character/AuraCharacterBase.h"
+#include "Character/AuraCharacterBase.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -19,6 +19,8 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
- 
+
+void AAuraCharacterBase::SetupAbilitySystemAndAttributeSet()
+{
+}

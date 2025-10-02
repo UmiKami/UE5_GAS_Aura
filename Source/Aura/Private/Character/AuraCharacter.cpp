@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -58,8 +59,13 @@ void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
 
 	checkf(CurrentPlayerState, TEXT("CurrentPlayerState is NULL on AAuraCharacter"));
 
-	CurrentPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(CurrentPlayerState, this);
-	AbilitySystemComponent = CurrentPlayerState->GetAbilitySystemComponent();
+	UAbilitySystemComponent* ASC = CurrentPlayerState->GetAbilitySystemComponent();
+	ASC->InitAbilityActorInfo(CurrentPlayerState, this);
+
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(ASC);
+	AuraASC->AbilityActorInfoSet();
+
+	AbilitySystemComponent = ASC;
 	AttributeSet = CurrentPlayerState->GetAttributeSet();
 }
 

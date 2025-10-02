@@ -31,6 +31,6 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 private:
-	void SetupAbilitySystemAndAttributeSet();
+	virtual void SetupAbilitySystemAndAttributeSet() override;
 	void SetupOverlayWidget() const;
 };

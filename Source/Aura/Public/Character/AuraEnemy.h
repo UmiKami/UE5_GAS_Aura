@@ -21,11 +21,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
+	virtual void SetupAbilitySystemAndAttributeSet() override;
 
+public:
 #pragma region Enemy Interfcace
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 #pragma endregion
-	
 };
