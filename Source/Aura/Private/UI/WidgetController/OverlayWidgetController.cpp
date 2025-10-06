@@ -42,7 +42,15 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			for (FGameplayTag Tag : AssetTags)
 			{
-				FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+				const FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag("Message");
+				
+				// expanding out parent tags "A.1".MatchesTag("A") will return True, "A".MatchesTag("A.1") will return False If TagToCheck is not Valid it will always return False
+				if ( Tag.MatchesTag(MessageTag) )
+				{
+					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+					MessageWidgetRowDelegate.Broadcast(*Row);
+				}
+				
 			}
 		}
 	);
