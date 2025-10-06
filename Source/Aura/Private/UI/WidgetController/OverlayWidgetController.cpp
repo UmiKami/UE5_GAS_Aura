@@ -26,16 +26,36 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 	// When the requested attribute value changes, it will call the callback function provided through AddUObject
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute())
-	                      .AddUObject(this, &UOverlayWidgetController::HealthChanged);
+	                      .AddLambda(
+		                      [this](const FOnAttributeChangeData& Data)
+		                      {
+			                      OnHealthChange.Broadcast(Data.NewValue);
+		                      }
+	                      );
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute())
-	                      .AddUObject(this, &UOverlayWidgetController::MaxHealthChanged);
+	                      .AddLambda(
+		                      [this](const FOnAttributeChangeData& Data)
+		                      {
+			                      OnMaxHealthChange.Broadcast(Data.NewValue);
+		                      }
+	                      );
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute())
-	                      .AddUObject(this, &UOverlayWidgetController::ManaChanged);
+	                      .AddLambda(
+		                      [this](const FOnAttributeChangeData& Data)
+		                      {
+			                      OnManaChange.Broadcast(Data.NewValue);
+		                      }
+	                      );
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute())
-	                      .AddUObject(this, &UOverlayWidgetController::MaxManaChanged);
+	                      .AddLambda(
+		                      [this](const FOnAttributeChangeData& Data)
+		                      {
+			                      OnMaxManaChange.Broadcast(Data.NewValue);
+		                      }
+	                      );
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->OnEffectAssetTagsApplied.AddLambda(
 		[this](const FGameplayTagContainer& AssetTags)
@@ -43,35 +63,14 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			for (FGameplayTag Tag : AssetTags)
 			{
 				const FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag("Message");
-				
+
 				// expanding out parent tags "A.1".MatchesTag("A") will return True, "A".MatchesTag("A.1") will return False If TagToCheck is not Valid it will always return False
-				if ( Tag.MatchesTag(MessageTag) )
+				if (Tag.MatchesTag(MessageTag))
 				{
 					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
 					MessageWidgetRowDelegate.Broadcast(*Row);
 				}
-				
 			}
 		}
 	);
-}
-
-void UOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnHealthChange.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxHealthChange.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnManaChange.Broadcast(Data.NewValue);
-}
-
-void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data) const
-{
-	OnMaxManaChange.Broadcast(Data.NewValue);
 }
