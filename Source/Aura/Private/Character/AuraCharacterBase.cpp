@@ -2,6 +2,8 @@
 
 #include "Character/AuraCharacterBase.h"
 
+#include "AbilitySystemComponent.h"
+
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,4 +25,31 @@ void AAuraCharacterBase::BeginPlay()
 
 void AAuraCharacterBase::SetupAbilitySystemAndAttributeSet()
 {
+}
+
+void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level) const
+{
+	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
+
+	checkf(TargetASC, TEXT("Ability System Component is not valid for character base."))
+	checkf(InAttributes, TEXT("Provided attributes are not set for character."))
+
+	const FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(
+		InAttributes,
+		Level,
+		EffectContextHandle
+	);
+
+	TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data, TargetASC);
+}
+
+void AAuraCharacterBase::InitializeDefaultAttributes() const
+{
+	checkf(DefaultPrimaryAttributes, TEXT("Default primary attributes are not set for character."))
+	checkf(DefaultSecondaryAttributes, TEXT("Default secondary attributes are not set for character."))
+
+	ApplyEffectToSelf(DefaultPrimaryAttributes);
+	ApplyEffectToSelf(DefaultSecondaryAttributes);
 }

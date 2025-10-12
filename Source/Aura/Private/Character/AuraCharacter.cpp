@@ -67,6 +67,10 @@ void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
 
 	AbilitySystemComponent = ASC;
 	AttributeSet = CurrentPlayerState->GetAttributeSet();
+
+
+	// keep this call always below initialization of AbilitySystemComponent
+	InitializeDefaultAttributes();
 }
 
 void AAuraCharacter::SetupOverlayWidget() const
