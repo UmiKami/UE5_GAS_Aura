@@ -55,6 +55,11 @@ void AAuraEnemy::UnHighlightActor()
 	}
 }
 
+int32 AAuraEnemy::GetPlayerLevel()
+{
+	return Level;
+}
+
 void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);

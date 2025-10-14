@@ -30,6 +30,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
+#pragma region Combat Interface
+	virtual int32 GetPlayerLevel() override;
+#pragma endregion 
+
 private:
 	virtual void SetupAbilitySystemAndAttributeSet() override;
 	void SetupOverlayWidget() const;

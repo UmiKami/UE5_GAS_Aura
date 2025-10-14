@@ -53,6 +53,15 @@ void AAuraCharacter::OnRep_PlayerState()
 	SetupOverlayWidget();
 }
 
+int32 AAuraCharacter::GetPlayerLevel()
+{
+	const TObjectPtr<AAuraPlayerState> CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
+	
+	checkf(CurrentPlayerState, TEXT("CurrentPlayerState is NULL on AAuraCharacter"));
+
+	return CurrentPlayerState->GetPlayerLevel();
+}
+
 void AAuraCharacter::SetupAbilitySystemAndAttributeSet()
 {
 	const TObjectPtr<AAuraPlayerState> CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
