@@ -34,7 +34,9 @@ void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttrib
 	checkf(TargetASC, TEXT("Ability System Component is not valid for character base."))
 	checkf(InAttributes, TEXT("Provided attributes are not set for character."))
 
-	const FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+
+	EffectContextHandle.AddSourceObject(this);
 
 	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(
 		InAttributes,
@@ -52,4 +54,5 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 
 	ApplyEffectToSelf(DefaultPrimaryAttributes);
 	ApplyEffectToSelf(DefaultSecondaryAttributes);
+	ApplyEffectToSelf(DefaultVitalAttributes);
 }
