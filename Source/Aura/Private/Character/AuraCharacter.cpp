@@ -92,7 +92,7 @@ void AAuraCharacter::SetupOverlayWidget() const
 	{
 		/*
 		 * The reason why we are checking nullptr with if statement is because AuraHUD is only valid for local player.
-		 * This function will also be run on the server side, in which the HUD of other players will be NULL for the local player.
+		 * This function will also be run on the server side, in which case the HUD of other players will be NULL for the local player.
 		 */
 		if (const TObjectPtr<AAuraHUD> AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
 		{
