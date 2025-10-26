@@ -19,6 +19,12 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxManaChange.Broadcast(AuraAttributeSet->GetMaxMana());
 }
 
+/**
+* A function with multiple binds with the GAS component which,
+* executes callbacks every time an attribute changes. The callbacks,
+* will in turn broadcast to their respective delegates - which the
+* widgets are listening on from the blueprint side.
+*/
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	Super::BindCallbacksToDependencies();
