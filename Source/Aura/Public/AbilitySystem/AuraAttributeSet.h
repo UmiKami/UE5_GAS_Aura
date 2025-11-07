@@ -70,6 +70,25 @@ public:
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	
+	/**
+	 * NOTE: Below Map is no longer needed but leaving it for future reference.
+	 * 
+	 * TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr - This is function pointer that allows us to store the pointer to any function.
+	 * By storing the pointer to a function, we can later in the code execute that Function Pointer which in turn will execute the function that it is pointing to.
+	 * 
+	 * For example:
+	 *
+	 * TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FuncPointer = GetStrengthAttribute()
+	 *
+	 * FuncPointer()
+	 *
+	 * The output of the above function call will be an FGameplayAttribute, the same FGameplayAttribute you would have gotten if you called GetStrengthAttribute directly.
+	 */
+	
+	// TMap<FGameplayTag, TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr> TagsToAttributes;
+
+	
 #pragma region Primary Attributes
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
 	FGameplayAttributeData Strength;
