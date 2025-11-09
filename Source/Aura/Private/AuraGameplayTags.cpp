@@ -82,5 +82,38 @@ namespace AuraGameplayTags
 		"Attributes.Secondary.MaxMana",
 		"Maximum amount of Health obtainable."
 	);
-	// endregion 
+	// endregion
+
+	// region Input Tags
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_LMB,
+		"InputTag.LMB",
+		"Left mouse button."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_RMB,
+		"InputTag.RMB",
+		"Right mouse button."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_1,
+		"InputTag.1",
+		"Input tag for 1 key."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_2,
+		"InputTag.2",
+		"Input tag for 2 key."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_3,
+		"InputTag.3",
+		"Input tag for 3 key."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		InputTag_4,
+		"InputTag.4",
+		"Input tag for 4 key."
+	);
+	// endregion
 }
