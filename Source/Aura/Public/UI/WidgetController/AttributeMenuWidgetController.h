@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "UI/Widget/AuraWidgetController.h"
 #include "AttributeMenuWidgetController.generated.h"
 
@@ -28,4 +29,7 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UAttributeInfo> AttributeInfoDA;
+
+private:
+	void BroadCastAttributeInfo(FAuraAttributeInfo& AttributeInfo) const;
 };
