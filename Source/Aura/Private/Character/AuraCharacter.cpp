@@ -32,23 +32,21 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationRoll = false;
 }
 
-
+// Gets called on the Server
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	// init ability actor info for the Server
-
+	
 	SetupAbilitySystemAndAttributeSet();
 	SetupOverlayWidget();
+	AddCharacterAbiltiies();
 }
 
+//G Gets called on the client
 void AAuraCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-
-	// init ability actor info for the Client
-
+	
 	SetupAbilitySystemAndAttributeSet();
 	SetupOverlayWidget();
 }

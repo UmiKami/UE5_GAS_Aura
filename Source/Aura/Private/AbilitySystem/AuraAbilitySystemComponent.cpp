@@ -14,6 +14,16 @@ void UAuraAbilitySystemComponent::BindCallbacksToDependencies()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
 }
 
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpAbilities)
+{
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartUpAbilities)
+	{
+		FGameplayAbilitySpec GameplayAbilitySpec(AbilityClass, 1);
+		
+		GiveAbilityAndActivateOnce(GameplayAbilitySpec);
+	}
+}
+
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
                                                 const FGameplayEffectSpec& EffectSpec,
                                                 FActiveGameplayEffectHandle ActiveGEffectHandle)
