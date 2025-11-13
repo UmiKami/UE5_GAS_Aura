@@ -116,4 +116,12 @@ namespace AuraGameplayTags
 		"Input tag for 4 key."
 	);
 	// endregion
+
+	// region Ability Event Tags
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		Event_Montage_FireBolt,
+		"Event.Montage.FireBolt",
+		"Event to launch a firebolt from GA"
+	);
+	// endregion
 }
