@@ -1,10 +1,7 @@
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 // Copyright By UmiKami
-
-
-#include "AbilitySystem/AuraAbilitySystemComponent.h"
-
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
