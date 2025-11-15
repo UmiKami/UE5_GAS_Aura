@@ -3,6 +3,8 @@
 
 #include "AuraAssetManager.h"
 
+#include "AbilitySystemGlobals.h"
+
 UAuraAssetManager& UAuraAssetManager::Get()
 {
 	checkf(GEngine, TEXT("GEngine not valid."));
@@ -15,4 +17,7 @@ UAuraAssetManager& UAuraAssetManager::Get()
 void UAuraAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
+	
+	// This is required to use target data
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }
