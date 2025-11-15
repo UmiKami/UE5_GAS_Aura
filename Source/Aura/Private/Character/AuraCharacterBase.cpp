@@ -3,6 +3,7 @@
 #include "Character/AuraCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "MotionWarpingComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 
@@ -30,6 +31,14 @@ void AAuraCharacterBase::BeginPlay()
 FVector AAuraCharacterBase::GetCombatSocketLocation()
 {
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+void AAuraCharacterBase::SetFacingWarpTarget(const FVector& TargetLocation, const FName WarpTargetName)
+{
+	if (UMotionWarpingComponent* MotionWarping = FindComponentByClass<UMotionWarpingComponent>())
+	{
+		MotionWarping->AddOrUpdateWarpTargetFromLocation(WarpTargetName, TargetLocation);
+	}
 }
 
 void AAuraCharacterBase::SetupAbilitySystemAndAttributeSet()

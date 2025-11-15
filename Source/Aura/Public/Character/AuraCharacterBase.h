@@ -39,6 +39,8 @@ protected:
 
 	virtual FVector GetCombatSocketLocation() override;
 
+	virtual void SetFacingWarpTarget(const FVector& TargetLocation, FName WarpTargetName) override;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
