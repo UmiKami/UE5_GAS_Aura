@@ -45,26 +45,6 @@ void AAuraCharacterBase::SetupAbilitySystemAndAttributeSet()
 {
 }
 
-void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level) const
-{
-	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
-
-	checkf(TargetASC, TEXT("Ability System Component is not valid for character base."))
-	checkf(InAttributes, TEXT("Provided attributes are not set for character."))
-
-	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-
-	EffectContextHandle.AddSourceObject(this);
-
-	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(
-		InAttributes,
-		Level,
-		EffectContextHandle
-	);
-
-	TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data, TargetASC);
-}
-
 void AAuraCharacterBase::InitializeDefaultAttributes() const
 {
 	checkf(DefaultPrimaryAttributes, TEXT("Default primary attributes are not set for character."))
@@ -85,4 +65,24 @@ void AAuraCharacterBase::AddCharacterAbiltiies()
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 
 	AuraASC->AddCharacterAbilities(StartUpAbilities);
+}
+
+void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level) const
+{
+	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
+
+	checkf(TargetASC, TEXT("Ability System Component is not valid for character base."))
+	checkf(InAttributes, TEXT("Provided attributes are not set for character."))
+
+	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+
+	EffectContextHandle.AddSourceObject(this);
+
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(
+		InAttributes,
+		Level,
+		EffectContextHandle
+	);
+
+	TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data, TargetASC);
 }
