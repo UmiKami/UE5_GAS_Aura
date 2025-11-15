@@ -36,7 +36,7 @@ AAuraCharacter::AAuraCharacter()
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
+
 	SetupAbilitySystemAndAttributeSet();
 	SetupOverlayWidget();
 	AddCharacterAbiltiies();
@@ -46,7 +46,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 void AAuraCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
+
 	SetupAbilitySystemAndAttributeSet();
 	SetupOverlayWidget();
 }
@@ -54,7 +54,7 @@ void AAuraCharacter::OnRep_PlayerState()
 int32 AAuraCharacter::GetPlayerLevel()
 {
 	const TObjectPtr<AAuraPlayerState> CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
-	
+
 	checkf(CurrentPlayerState, TEXT("CurrentPlayerState is NULL on AAuraCharacter"));
 
 	return CurrentPlayerState->GetPlayerLevel();
