@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -100,6 +101,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	FEffectProperties Props;
 
 	SetEffectProperties(Data, Props);
+
+	UKismetSystemLibrary::PrintString(
+		GetWorld(),
+		FString::Printf(TEXT("Changed health on %s, Health: %f"), *Props.Target.AvatarActor.GetName(), GetHealth()),
+		true, true, FLinearColor::Yellow, 5);
 }
 
 void UAuraAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
