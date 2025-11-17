@@ -30,6 +30,9 @@ namespace AuraGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_MaxHealth);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Secondary_MaxMana);
 
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Vital_Health);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Vital_Mana);
+
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_LMB);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_RMB);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_1);
