@@ -66,4 +66,6 @@ void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
 
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraASC->AbilityActorInfoSet();
+
+	InitializeDefaultAttributes();
 }
