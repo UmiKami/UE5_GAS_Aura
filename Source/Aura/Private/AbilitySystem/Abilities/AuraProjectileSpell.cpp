@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraProjectileSpell.h"
 
+#include "AbilitySystemComponent.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -37,7 +38,12 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 		);
 
-		// TODO: Give the projectile a Gameplay Effect Spec for causing damage
+		const UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
+
+		const FGameplayEffectSpecHandle GameplayEffectSpecHandle = SourceASC->MakeOutgoingSpec(
+			DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+		Projectile->DamageEffectSpecHandle = GameplayEffectSpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}
