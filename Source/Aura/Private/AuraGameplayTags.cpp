@@ -82,6 +82,17 @@ namespace AuraGameplayTags
 		"Attributes.Secondary.MaxMana",
 		"Maximum amount of Health obtainable."
 	);
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		Attributes_Vital_Health,
+		"Attributes.Vital.Health",
+		"Current amount of health."
+	);
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		Attributes_Vital_Mana,
+		"Attributes.Vital.Mana",
+		"Current amount of mana."
+	);
 	// endregion
 
 	// region Input Tags

@@ -5,16 +5,22 @@
 #include "AbilitySystemComponent.h"
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+	USkeletalMeshComponent* MeshComponent = GetMesh();
+
+	MeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	MeshComponent->SetCollisionResponseToChannel(ECC_PROJECTILE, ECR_Overlap);
+	MeshComponent->SetGenerateOverlapEvents(true);
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	Weapon->SetupAttachment(GetMesh(), "WeaponHandSocket");
+	Weapon->SetupAttachment(MeshComponent, "WeaponHandSocket");
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

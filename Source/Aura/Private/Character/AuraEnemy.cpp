@@ -3,9 +3,13 @@
 
 #include "Character/AuraEnemy.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/AttributeInfo.h"
 #include "Aura/Aura.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widget/AuraUserWidget.h"
 
 
 AAuraEnemy::AAuraEnemy()
@@ -17,6 +21,10 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
+
+	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthBarComponent->SetupAttachment(RootComponent);
+	HealthBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 void AAuraEnemy::BeginPlay()
@@ -26,6 +34,8 @@ void AAuraEnemy::BeginPlay()
 	checkf(AbilitySystemComponent, TEXT("AbilitySystem Component is NULL on AuraEnemy"))
 
 	SetupAbilitySystemAndAttributeSet();
+	BindCallbacksToChangesOnHealth();
+	BroadcastInitialValues();
 }
 
 void AAuraEnemy::HighlightActor()
@@ -66,4 +76,42 @@ void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
 
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	AuraASC->AbilityActorInfoSet();
+
+	InitializeDefaultAttributes();
+}
+
+void AAuraEnemy::BroadcastInitialValues() const
+{
+	if (const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet))
+	{
+		HealthSignature.Broadcast(AuraAttributeSet->GetHealth());
+		MaxHealthSignature.Broadcast(AuraAttributeSet->GetMaxHealth());
+	}
+}
+
+void AAuraEnemy::BindCallbacksToChangesOnHealth()
+{
+	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBarComponent->GetUserWidgetObject()))
+	{
+		AuraUserWidget->SetWidgetController(this);
+	}
+
+	if (const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).
+		                        AddLambda(
+			                        [this, AuraAttributeSet](const FOnAttributeChangeData& Data)
+			                        {
+				                        HealthSignature.Broadcast(Data.NewValue);
+			                        }
+		                        );
+
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).
+		                        AddLambda(
+			                        [this, AuraAttributeSet](const FOnAttributeChangeData& Data)
+			                        {
+				                        MaxHealthSignature.Broadcast(Data.NewValue);
+			                        }
+		                        );
+	}
 }
