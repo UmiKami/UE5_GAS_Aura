@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
 
+enum class ECharacterClass : uint8;
 struct FAuraAttributeInfo;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthAttributeChangeSignature, float, NewAttributeValue);
 
@@ -40,14 +42,18 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupAbilitySystemAndAttributeSet() override;
+	virtual void InitializeDefaultAttributes() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	int32 Level = 1;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBarComponent;
 
 private:
-	void BroadcastInitialValues() const;
+	void BroadcastInitialValuesToUI() const;
 	void BindCallbacksToChangesOnHealth();
 };

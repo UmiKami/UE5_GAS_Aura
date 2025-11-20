@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemFunctionLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
 #include "Aura/Aura.h"
@@ -35,7 +36,7 @@ void AAuraEnemy::BeginPlay()
 
 	SetupAbilitySystemAndAttributeSet();
 	BindCallbacksToChangesOnHealth();
-	BroadcastInitialValues();
+	BroadcastInitialValuesToUI();
 }
 
 void AAuraEnemy::HighlightActor()
@@ -80,7 +81,15 @@ void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
 	InitializeDefaultAttributes();
 }
 
-void AAuraEnemy::BroadcastInitialValues() const
+void AAuraEnemy::InitializeDefaultAttributes() const
+{
+	UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+/**
+ * Private function only meant to send values to the Enemy Health Bar Widget.
+ */
+void AAuraEnemy::BroadcastInitialValuesToUI() const
 {
 	if (const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet))
 	{
