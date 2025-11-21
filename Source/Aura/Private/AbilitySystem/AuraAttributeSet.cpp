@@ -102,10 +102,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	SetEffectProperties(Data, Props);
 
-	UKismetSystemLibrary::PrintString(
-		GetWorld(),
-		FString::Printf(TEXT("Changed health on %s, Health: %f"), *Props.Target.AvatarActor.GetName(), GetHealth()),
-		true, true, FLinearColor::Yellow, 5);
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		
+		if (LocalIncomingDamage > 0.f)
+		{
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth,0.f, GetMaxHealth()));
+			
+			const bool bFatal = NewHealth <= 0.f;
+		}
+	}
 }
 
 void UAuraAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
