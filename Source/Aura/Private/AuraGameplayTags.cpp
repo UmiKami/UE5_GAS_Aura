@@ -135,4 +135,20 @@ namespace AuraGameplayTags
 		"Event to launch a firebolt from GA"
 	);
 	// endregion
+
+	// region Gameplay Effects
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		Effects_HitReact,
+		"Effects.HitReact",
+		"Hit reaction."
+	);
+	// endregion
+	
+	// region Other Tags
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(
+		Damage,
+		"Damage",
+		"Damage."
+	);
+	// endregion
 }
