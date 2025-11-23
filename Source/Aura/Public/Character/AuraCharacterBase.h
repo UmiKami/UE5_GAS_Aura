@@ -60,7 +60,7 @@ protected:
 
 	virtual void InitializeDefaultAttributes() const;
 
-	void AddCharacterAbiltiies();
+	void AddCharacterAbiltiies() const;
 
 private:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level = 1) const;
