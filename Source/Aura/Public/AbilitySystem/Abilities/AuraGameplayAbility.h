@@ -17,4 +17,11 @@ class AURA_API UAuraGameplayAbility : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag StartUpInputTag;
+	
+	/**
+	 * This is an optional member variable, only meant for abilities that inflict some kind of damage.
+	 * It allows us to scale damage on a curve table based on ability level.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
+	FScalableFloat DamageMagnitude;
 };
