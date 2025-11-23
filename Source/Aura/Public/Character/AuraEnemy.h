@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
@@ -37,6 +38,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FHealthAttributeChangeSignature MaxHealthSignature;
+	
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	bool bHitReacting;
+	
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 250.f;
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -55,5 +63,7 @@ protected:
 
 private:
 	void BroadcastInitialValuesToUI() const;
-	void BindCallbacksToChangesOnHealth();
+	void OnHitReactTagChanged(FGameplayTag GameplayTag, int I);
+	void BindCallbacksToDependencies();
+	
 };
