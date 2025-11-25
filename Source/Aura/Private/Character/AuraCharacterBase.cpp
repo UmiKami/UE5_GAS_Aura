@@ -39,12 +39,17 @@ FVector AAuraCharacterBase::GetCombatSocketLocation()
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
-void AAuraCharacterBase::SetFacingWarpTarget(const FVector& TargetLocation, const FName WarpTargetName)
+void AAuraCharacterBase::SetFacingWarpTarget_Implementation(const FVector& TargetLocation, const FName WarpTargetName)
 {
 	if (UMotionWarpingComponent* MotionWarping = FindComponentByClass<UMotionWarpingComponent>())
 	{
 		MotionWarping->AddOrUpdateWarpTargetFromLocation(WarpTargetName, TargetLocation);
 	}
+}
+
+UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
 }
 
 void AAuraCharacterBase::SetupAbilitySystemAndAttributeSet()

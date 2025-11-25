@@ -39,8 +39,10 @@ protected:
 
 	virtual FVector GetCombatSocketLocation() override;
 
-	virtual void SetFacingWarpTarget(const FVector& TargetLocation, FName WarpTargetName) override;
+	virtual void SetFacingWarpTarget_Implementation(const FVector& TargetLocation, FName WarpTargetName) override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
+protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -67,4 +69,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+	
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

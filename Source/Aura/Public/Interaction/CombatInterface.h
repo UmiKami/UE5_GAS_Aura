@@ -7,7 +7,7 @@
 #include "CombatInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI, BlueprintType, NotBlueprintable)
+UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -25,6 +25,9 @@ public:
 	virtual int32 GetPlayerLevel();
 	virtual FVector GetCombatSocketLocation();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void SetFacingWarpTarget(const FVector& TargetLocation, FName WarpTargetName);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetFacingWarpTarget(const FVector& TargetLocation, FName WarpTargetName);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
 };
