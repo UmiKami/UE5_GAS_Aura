@@ -40,6 +40,7 @@ void AAuraEnemy::BeginPlay()
 	SetupAbilitySystemAndAttributeSet();
 	BindCallbacksToDependencies();
 	BroadcastInitialValuesToUI();
+	UAuraAbilitySystemFunctionLibrary::GiveStartUpAbilities(this, AbilitySystemComponent);
 }
 
 void AAuraEnemy::HighlightActor()
