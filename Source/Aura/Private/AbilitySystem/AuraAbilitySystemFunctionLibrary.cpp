@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemFunctionLibrary.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,7 +14,7 @@
 UOverlayWidgetController* UAuraAbilitySystemFunctionLibrary::GetOverlayWidgetController(
 	const UObject* WorldContextObject)
 {
-	if(APlayerController* PlayerController = WorldContextObject->GetWorld()->GetFirstPlayerController())
+	if (APlayerController* PlayerController = WorldContextObject->GetWorld()->GetFirstPlayerController())
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
 		{
@@ -33,7 +34,7 @@ UOverlayWidgetController* UAuraAbilitySystemFunctionLibrary::GetOverlayWidgetCon
 UAttributeMenuWidgetController* UAuraAbilitySystemFunctionLibrary::GetAttributeMenuWidgetController(
 	const UObject* WorldContextObject)
 {
-	if(APlayerController* PlayerController = WorldContextObject->GetWorld()->GetFirstPlayerController())
+	if (APlayerController* PlayerController = WorldContextObject->GetWorld()->GetFirstPlayerController())
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
 		{
@@ -50,35 +51,65 @@ UAttributeMenuWidgetController* UAuraAbilitySystemFunctionLibrary::GetAttributeM
 	return nullptr;
 }
 
-void UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, const ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
+void UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
+                                                                    const ECharacterClass CharacterClass, float Level,
+                                                                    UAbilitySystemComponent* ASC)
 {
 	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	
-	if (!AuraGameModeBase) return;
+
+	if (!AuraGameModeBase)
+	{
+		return;
+	}
 
 	const TObjectPtr<UCharacterClassInfo> CharacterClassInfo = AuraGameModeBase->CharacterClassInfo;
-	
+
 	checkf(CharacterClassInfo, TEXT("Data Asset for character class info not set in AuraGameMode."))
-	
+
 	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
 	AActor* Avatar = ASC->GetAvatarActor();
-	
+
 	FGameplayEffectContextHandle PrimaryEffectContext = ASC->MakeEffectContext();
 	PrimaryEffectContext.AddSourceObject(Avatar);
-	
-	const FGameplayEffectSpecHandle PrimaryEffectSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes, Level, PrimaryEffectContext);
+
+	const FGameplayEffectSpecHandle PrimaryEffectSpecHandle = ASC->MakeOutgoingSpec(
+		ClassDefaultInfo.PrimaryAttributes, Level, PrimaryEffectContext);
 	ASC->ApplyGameplayEffectSpecToSelf(*PrimaryEffectSpecHandle.Data);
 
 	FGameplayEffectContextHandle SecondaryEffectContext = ASC->MakeEffectContext();
 	SecondaryEffectContext.AddSourceObject(Avatar);
-	
-	const FGameplayEffectSpecHandle SecondaryEffectSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->SecondaryAttributes, Level, SecondaryEffectContext);
+
+	const FGameplayEffectSpecHandle SecondaryEffectSpecHandle = ASC->MakeOutgoingSpec(
+		CharacterClassInfo->SecondaryAttributes, Level, SecondaryEffectContext);
 	ASC->ApplyGameplayEffectSpecToSelf(*SecondaryEffectSpecHandle.Data);
 
 	FGameplayEffectContextHandle VitalEffectContext = ASC->MakeEffectContext();
 	VitalEffectContext.AddSourceObject(Avatar);
-	
-	const FGameplayEffectSpecHandle VitalEffectSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalEffectContext);
+
+	const FGameplayEffectSpecHandle VitalEffectSpecHandle = ASC->MakeOutgoingSpec(
+		CharacterClassInfo->VitalAttributes, Level, VitalEffectContext);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalEffectSpecHandle.Data);
+}
+
+void UAuraAbilitySystemFunctionLibrary::GiveStartUpAbilities(const UObject* WorldContextObject,
+                                                             UAbilitySystemComponent* ASC)
+{
+	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+
+	if (!AuraGameModeBase)
+	{
+		return;
+	}
+
+	const TObjectPtr<UCharacterClassInfo> CharacterClassInfo = AuraGameModeBase->CharacterClassInfo;
+
+	checkf(CharacterClassInfo, TEXT("Data Asset for character class info not set in AuraGameMode."))
+
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		
+		ASC->GiveAbility(AbilitySpec);
+	}
 }

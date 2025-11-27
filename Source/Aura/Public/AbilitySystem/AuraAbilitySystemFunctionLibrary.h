@@ -19,12 +19,20 @@ class AURA_API UAuraAbilitySystemFunctionLibrary : public UBlueprintFunctionLibr
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemFunctionLibrary|WidgetController" ,meta=(WorldContext="WorldContextObject") )
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemFunctionLibrary|WidgetController",
+		meta=(WorldContext="WorldContextObject"))
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
-	
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemFunctionLibrary|WidgetController" ,meta=(WorldContext="WorldContextObject") )
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemFunctionLibrary|WidgetController",
+		meta=(WorldContext="WorldContextObject"))
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
-	
-	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemFunctionLibrary|CharacterClassDefaults" ,meta=(WorldContext="WorldContextObject") )
-	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
+
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemFunctionLibrary|CharacterClassDefaults",
+		meta=(WorldContext="WorldContextObject"))
+	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass,
+	                                        float Level, UAbilitySystemComponent* ASC);
+
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemFunctionLibrary|CharacterClassDefaults",
+		meta=(WorldContext="WorldContextObject"))
+	static void GiveStartUpAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 };
