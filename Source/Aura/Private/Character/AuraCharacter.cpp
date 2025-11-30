@@ -44,7 +44,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	SetupAbilitySystemAndAttributeSet();
 	SetupOverlayWidget();
-	AddCharacterAbiltiies();
+	AddCharacterAbilities();
 }
 
 //G Gets called on the client
