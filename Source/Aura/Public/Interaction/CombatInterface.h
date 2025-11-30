@@ -27,7 +27,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetFacingWarpTarget(const FVector& TargetLocation, FName WarpTargetName);
-	
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
+
+	virtual void Die() = 0;
 };

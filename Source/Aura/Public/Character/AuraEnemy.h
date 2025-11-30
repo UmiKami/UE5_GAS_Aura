@@ -32,19 +32,21 @@ public:
 
 #pragma region Combat Interface
 	virtual int32 GetPlayerLevel() override;
+	virtual void Die() override;
 #pragma endregion
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FHealthAttributeChangeSignature HealthSignature;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FHealthAttributeChangeSignature MaxHealthSignature;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	bool bHitReacting;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	float BaseWalkSpeed = 250.f;
 	
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -54,10 +56,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	int32 Level = 1;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBarComponent;
 
@@ -65,5 +67,4 @@ private:
 	void BroadcastInitialValuesToUI() const;
 	void OnHitReactTagChanged(FGameplayTag GameplayTag, int I);
 	void BindCallbacksToDependencies();
-	
 };

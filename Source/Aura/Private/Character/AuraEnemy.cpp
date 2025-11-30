@@ -36,7 +36,7 @@ void AAuraEnemy::BeginPlay()
 	checkf(AbilitySystemComponent, TEXT("AbilitySystem Component is NULL on AuraEnemy"))
 
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-	
+
 	SetupAbilitySystemAndAttributeSet();
 	BindCallbacksToDependencies();
 	BroadcastInitialValuesToUI();
@@ -75,6 +75,12 @@ int32 AAuraEnemy::GetPlayerLevel()
 	return Level;
 }
 
+void AAuraEnemy::Die()
+{
+	
+	Super::Die();
+}
+
 void AAuraEnemy::SetupAbilitySystemAndAttributeSet()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
@@ -104,8 +110,8 @@ void AAuraEnemy::BroadcastInitialValuesToUI() const
 
 void AAuraEnemy::OnHitReactTagChanged(FGameplayTag GameplayTag, int NewCount)
 {
-	bHitReacting= NewCount > 0;
-	
+	bHitReacting = NewCount > 0;
+
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 }
 

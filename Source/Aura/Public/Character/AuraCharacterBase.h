@@ -28,6 +28,11 @@ public:
 		return AttributeSet;
 	}
 
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -41,8 +46,6 @@ protected:
 
 	virtual void SetFacingWarpTarget_Implementation(const FVector& TargetLocation, FName WarpTargetName) override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-
-protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -62,14 +65,29 @@ protected:
 
 	virtual void InitializeDefaultAttributes() const;
 
-	void AddCharacterAbiltiies() const;
+	void AddCharacterAbilities() const;
+
+	// Dissolve Effects	
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeLine(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeLine(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
 private:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level = 1) const;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
-	
+
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 };

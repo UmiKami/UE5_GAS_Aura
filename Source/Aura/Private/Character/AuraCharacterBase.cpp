@@ -29,6 +29,35 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AAuraCharacterBase::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+
+	// If we call MulticastHandleDeath_Implementation, it will execute only on Server side, character will die but ragdoll physics will not be visible on client. 
+	MulticastHandleDeath();
+}
+
+/**
+ * Whatever happens on this function for death, it is replicated to all other clients including the server.
+ */
+void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+{
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	const TObjectPtr<USkeletalMeshComponent> MeshComponent = GetMesh();
+
+	MeshComponent->SetSimulatePhysics(true);
+	MeshComponent->SetEnableGravity(true);
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	MeshComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	Dissolve();
+}
+
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -66,7 +95,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	ApplyEffectToSelf(DefaultVitalAttributes);
 }
 
-void AAuraCharacterBase::AddCharacterAbiltiies() const
+void AAuraCharacterBase::AddCharacterAbilities() const
 {
 	if (!HasAuthority())
 	{
@@ -76,6 +105,24 @@ void AAuraCharacterBase::AddCharacterAbiltiies() const
 	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 
 	AuraASC->AddCharacterAbilities(StartUpAbilities);
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicMatInst);
+		StartDissolveTimeLine(DynamicMatInst);
+	}
+
+	if (IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(
+			WeaponDissolveMaterialInstance, this);
+		Weapon->SetMaterial(0, DynamicMatInst);
+		StartWeaponDissolveTimeLine(DynamicMatInst);
+	}
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> InAttributes, const float Level) const
