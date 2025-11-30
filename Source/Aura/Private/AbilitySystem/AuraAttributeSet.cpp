@@ -7,8 +7,10 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -95,6 +97,18 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	}
 }
 
+void UAuraAttributeSet::ShowFloatingText(FEffectProperties Props, const float LocalIncomingDamage) const
+{
+	if (Props.Source.Character != Props.Target.Character)
+	{
+		if (AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(
+			UGameplayStatics::GetPlayerController(Props.Source.Character, 0)))
+		{
+			PlayerController->ShowDamageNumber(LocalIncomingDamage, Props.Target.Character);
+		}
+	}
+}
+
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -107,22 +121,24 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
 		SetIncomingDamage(0.f);
-		
+
 		if (LocalIncomingDamage > 0.f)
 		{
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			SetHealth(FMath::Clamp(NewHealth,0.f, GetMaxHealth()));
-			
+			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+
 			const bool bFatal = NewHealth <= 0.f;
 			
 			if (!bFatal)
 			{
 				FGameplayTagContainer TagContainer;
-				
+
 				TagContainer.AddTag(AuraGameplayTags::Effects_HitReact);
-				
+
 				Props.Target.AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 			}
+
+			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
 }

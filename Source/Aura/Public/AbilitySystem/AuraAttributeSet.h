@@ -70,7 +70,7 @@ public:
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	
+
 	/**
 	 * NOTE: Below Map is no longer needed but leaving it for future reference.
 	 * 
@@ -85,10 +85,10 @@ public:
 	 *
 	 * The output of the above function call will be an FGameplayAttribute, the same FGameplayAttribute you would have gotten if you called GetStrengthAttribute directly.
 	 */
-	
+
 	// TMap<FGameplayTag, TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr> TagsToAttributes;
 
-	
+
 #pragma region Primary Attributes
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
 	FGameplayAttributeData Strength;
@@ -211,7 +211,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
-#pragma endregion 
+#pragma endregion
+
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
+	void ShowFloatingText(FEffectProperties Props, float LocalIncomingDamage) const;
 };
