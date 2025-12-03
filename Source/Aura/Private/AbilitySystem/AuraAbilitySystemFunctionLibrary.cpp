@@ -55,16 +55,9 @@ void UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(const UObjec
                                                                     const ECharacterClass CharacterClass, float Level,
                                                                     UAbilitySystemComponent* ASC)
 {
-	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 
-	if (!AuraGameModeBase)
-	{
-		return;
-	}
-
-	const TObjectPtr<UCharacterClassInfo> CharacterClassInfo = AuraGameModeBase->CharacterClassInfo;
-
-	checkf(CharacterClassInfo, TEXT("Data Asset for character class info not set in AuraGameMode."))
+	if (!CharacterClassInfo) return;
 
 	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
@@ -95,21 +88,26 @@ void UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(const UObjec
 void UAuraAbilitySystemFunctionLibrary::GiveStartUpAbilities(const UObject* WorldContextObject,
                                                              UAbilitySystemComponent* ASC)
 {
-	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	const UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 
-	if (!AuraGameModeBase)
-	{
-		return;
-	}
-
-	const TObjectPtr<UCharacterClassInfo> CharacterClassInfo = AuraGameModeBase->CharacterClassInfo;
-
-	checkf(CharacterClassInfo, TEXT("Data Asset for character class info not set in AuraGameMode."))
+	if (!CharacterClassInfo) return;
 
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-		
+
 		ASC->GiveAbility(AbilitySpec);
 	}
+}
+
+UCharacterClassInfo* UAuraAbilitySystemFunctionLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+
+	if (!AuraGameModeBase)
+	{
+		return nullptr;
+	}
+
+	return AuraGameModeBase->CharacterClassInfo;
 }
