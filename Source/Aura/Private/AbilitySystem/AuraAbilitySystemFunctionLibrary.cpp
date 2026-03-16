@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemFunctionLibrary.h"
 
+#include "AuraAbilityTypes.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Game/AuraGameModeBase.h"
@@ -57,7 +58,10 @@ void UAuraAbilitySystemFunctionLibrary::InitializeDefaultAttributes(const UObjec
 {
 	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 
-	if (!CharacterClassInfo) return;
+	if (!CharacterClassInfo)
+	{
+		return;
+	}
 
 	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
@@ -90,7 +94,10 @@ void UAuraAbilitySystemFunctionLibrary::GiveStartUpAbilities(const UObject* Worl
 {
 	const UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 
-	if (!CharacterClassInfo) return;
+	if (!CharacterClassInfo)
+	{
+		return;
+	}
 
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
@@ -110,4 +117,46 @@ UCharacterClassInfo* UAuraAbilitySystemFunctionLibrary::GetCharacterClassInfo(co
 	}
 
 	return AuraGameModeBase->CharacterClassInfo;
+}
+
+bool UAuraAbilitySystemFunctionLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(
+		EffectContextHandle.Get()))
+	{
+		return AuraGameplayEffectContext->IsBlockedHit();
+	}
+
+	return false;
+}
+
+bool UAuraAbilitySystemFunctionLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(
+		EffectContextHandle.Get()))
+	{
+		return AuraGameplayEffectContext->IsCriticalHit();
+	}
+
+	return false;
+}
+
+void UAuraAbilitySystemFunctionLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle,
+                                                        const bool bInIsBlocked)
+{
+	if (FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<FAuraGameplayEffectContext*>(
+		EffectContextHandle.Get()))
+	{
+		return AuraGameplayEffectContext->SetIsBlockedHit(bInIsBlocked);
+	}
+}
+
+void UAuraAbilitySystemFunctionLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
+                                                         const bool bInIsCritical)
+{
+	if (FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<FAuraGameplayEffectContext*>(
+		EffectContextHandle.Get()))
+	{
+		return AuraGameplayEffectContext->SetIsCriticalHit(bInIsCritical);
+	}
 }
